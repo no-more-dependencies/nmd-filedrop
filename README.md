@@ -1,4 +1,4 @@
-# Nmd-DropFile
+# Nmd-DropFile [![npm](https://img.shields.io/npm/v/nmd-filedrop?style=for-the-badge)](https://www.npmjs.com/package/nmd-filedrop)
 
 Simple element to replace `<input type="file">`
 
@@ -13,8 +13,8 @@ Simple element to replace `<input type="file">`
 <!DOCTYPE html>
 <html>
 	<body>
-      <nmd-dropfile regex="pdf|xml|png|cert|avi|text" accept="application/pdf" multiple>       </nmd-dropfile>
-    </body>
+		<nmd-dropfile regex="pdf|xml|png|cert|avi|text" accept="application/pdf" multiple></nmd-dropfile>
+	</body>
 </html>
 ```
 ## Import
