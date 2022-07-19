@@ -1,0 +1,109 @@
+:root{
+	--nmd-filedrop-color-primary: #1a89f1;
+	--nmd-filedrop-color-secondary: #eeeeee;
+	--nmd-filedrop-color-error: #f44336;
+	--nmd-filedrop-color-success: #4caf50;
+	--nmd-filedrop-color-warning: #ff9800;
+}
+
+*{
+	box-sizing: border-box;
+}
+
+form{
+	margin: 0 auto;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	font-weight: 400;
+}
+
+form > input {
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: .5rem .5rem;
+	margin: .55rem 0;
+	width: 100%;
+}
+
+form > button{
+	width: 100%;
+	background-color: transparent;
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: .25rem 5rem;
+}
+
+nmd-filedrop{
+	display: block;
+	background-color: var(--nmd-filedrop-color-primary);
+	border: 2px dashed var(--nmd-filedrop-color-secondary);
+	border-radius: 5px;
+	margin: 0.5rem 0;
+	color: var(--nmd-filedrop-color-secondary);
+	transition: background-color .2s;
+}
+
+nmd-filedrop svg{
+	width: 50px;
+	height: 50px;
+}
+
+nmd-filedrop.error{
+	background-color: var(--nmd-filedrop-color-error);
+}
+
+nmd-filedrop.success{
+	background-color: var(--nmd-filedrop-color-success);
+}
+
+nmd-filedrop.warning{
+	background-color: var(--nmd-filedrop-color-warning);
+}
+
+nmd-filedrop .drop-area{
+	padding: 3rem .5rem;
+	text-align: center;
+	cursor: pointer;
+}
+
+nmd-filedrop .bolder{
+	font-weight: bold;
+}
+
+nmd-filedrop .file-list{
+	display: none;
+	grid-template-columns: auto  min-content min-content min-content;
+	grid-gap: .5rem;
+	border-top: 1px dashed var(--nmd-filedrop-color-secondary);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+nmd-filedrop .file-list span.delete{
+	cursor: pointer;
+}
+nmd-filedrop .file-list span.delete::after{
+	content: '✖';
+}
+
+nmd-filedrop .file-list span.delete:hover{
+	color: var(--nmd-filedrop-color-error);
+	transition: color .2s ease-in-out;
+}
+
+nmd-filedrop .file-list.show{
+	display: grid;
+}
+
+nmd-filedrop .file-list *{
+	font-weight: bold;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: .75rem;
+}
+
+nmd-filedrop .file-list .file-img{
+	width: 100px;
+	object-fit: cover;
+	border-radius: 20px;
+}

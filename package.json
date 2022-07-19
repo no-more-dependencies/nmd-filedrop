@@ -1,0 +1,23 @@
+{
+  "name": "nmd-filedrop",
+  "version": "1.0.0",
+  "description": "Web component FileDrop",
+  "main": "./js/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Webcomponent",
+    "tag",
+    "FileDrop"
+  ],
+  "author": "n3ffi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/no-more-dependencies/nmd-filedrop.git"
+  }
+}
