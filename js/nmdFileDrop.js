@@ -367,7 +367,6 @@ export default class NmdFileDrop extends HTMLElement {
 	}
 
 	/**
-	 * 
 	 * @param {Msg} classMsg 
 	 */
 	setClassMessage(classMsg){
