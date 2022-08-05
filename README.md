@@ -1,12 +1,12 @@
-# Nmd-DropFile [![npm](https://img.shields.io/npm/v/nmd-filedrop?style=for-the-badge)](https://www.npmjs.com/package/nmd-filedrop)
+# Nmd-filedrop [![npm](https://img.shields.io/npm/v/nmd-filedrop?style=for-the-badge)](https://www.npmjs.com/package/nmd-filedrop)
 
 Simple element to replace `<input type="file">`.
 
 ## Options 
-- Accept: Same attribute as file input. Filter file extensions in windows explorer: `<nmd-dropfile accept="application/pdf"></nmd-dropfile>`
-- Regex: Simply enter regex for file type to accept: `<nmd-dropfile regex="json|pdf"></nmd-dropfile>`
-- Name: Add name to main file input exp: `<nmd-dropfile name="file"></nmd-dropfile>`
-- Multiple: Only if you multiple. If you are using PHP be sure you type "[]" in name. `<nmd-dropfile name="file[]" multiple></nmd-dropfile>`
+- Accept: Same attribute as file input. Filter file extensions in windows explorer: `<nmd-filedrop accept="application/pdf"></nmd-filedrop>`
+- Regex: Simply enter regex for file type to accept: `<nmd-filedrop regex="json|pdf"></nmd-filedrop>`
+- Name: Add name to main file input exp: `<nmd-filedrop name="file"></nmd-filedrop>`
+- Multiple: Only if you multiple. If you are using PHP be sure you type "[]" in name. `<nmd-filedrop name="file[]" multiple></nmd-filedrop>`
 - If not multiple, new file will override the uploaded one
 
 ```html
@@ -19,7 +19,7 @@ Simple element to replace `<input type="file">`.
 ```
 ## Import
 In your layout just import: 
-`<link rel="stylesheet" href="../css/nmdDropfile.css">`
+`<link rel="stylesheet" href="../css/nmdfiledrop.css">`
 
 `<script src="../js/index.js" type="module"></script>`
 
