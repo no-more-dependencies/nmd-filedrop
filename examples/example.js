@@ -7,5 +7,4 @@ customElements.define("nmd-filedrop", NmdFileDrop);
 /** @type {NmdFileDrop} */
 let fileDrop = document.querySelector("nmd-filedrop");
 
-fileDrop.setClassMessage({warning: {header: "Warning", img: "warning.svg"}});
-
+fileDrop.setClassMessage({default: {header: "Warning: ", message: "You can drop only one file."}});

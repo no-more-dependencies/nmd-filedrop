@@ -27,3 +27,14 @@ If you don't using webpack, don't forget to add `type="module"`.
 Also you have to add path to node modules like `<script src="node_modules/nmd-filedrop/js/index.js" type="module"></script>` with path for node modules.
 
 To change icons, you have to provide html in string. You can find in example.js with method set ClassMessage.
+
+## Events
+file-added: file occurs when file(s) added.
+event detail contains:
+- newFiles (list of all files)
+- originalFiles (list of all files except new ones)
+Event is cancelable. In the case ` e.preventDefault()`, html with files won't redraw. You can show list of uploaded files somewhere else.
+
+`const fileDrop = document.querySelector('nmd-filedrop')`
+
+`fileDrop.addEventListener('file-added, e => {e.preventDefault()})'`

@@ -5,7 +5,7 @@
  */
 let classMessage = {
 	"default": {
-		header: "Choose",
+		header: "Click",
 		message: 'or drop files here',
 		img: `<svg fill="#e6e6e6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
 			<path d="M144 480C64.47 480 0 415.5 0 336C0 273.2 40.17 219.8 96.2 200.1C96.07 197.4 96 194.7 96 192C96 103.6 167.6 32 256 32C315.3 32 367 64.25 394.7 112.2C409.9 101.1 428.3 96 448 96C501 96 544 138.1 544 192C544 204.2 541.7 215.8 537.6 226.6C596 238.4 640 290.1 640 352C640 422.7 582.7 480 512 480H144zM223 263C213.7 272.4 213.7 287.6 223 296.1C232.4 306.3 247.6 306.3 256.1 296.1L296 257.9V392C296 405.3 306.7 416 320 416C333.3 416 344 405.3 344 392V257.9L383 296.1C392.4 306.3 407.6 306.3 416.1 296.1C426.3 287.6 426.3 272.4 416.1 263L336.1 183C327.6 173.7 312.4 173.7 303 183L223 263z"/>
@@ -57,21 +57,25 @@ export default class NmdFileDrop extends HTMLElement {
 	}
 
 	connectedCallback() {
+
 		this.drawUI()
 
+		/** @type {HTMLInputElement} */
 		this.sideInput = this.querySelector("input[type=file]")
+
+		/** @type {HTMLInputElement} */
 		this.mainInput = this.querySelectorAll("input[type=file]")[1]
 
 		this.registerEventListeners()
 	}
 
-	drawUI(){
+	drawUI() {
 		this.innerHTML = `
 			<input type="file" ${this.multiple ? "multiple" : ""} ${this.accept ? 'accept="' + this.accept + '"' : ""} hidden> 
 			<input type="file" name="${this.name ? this.name : "file"}" ${this.multiple ? "multiple" : ""} hidden >
 			<div class="drop-area">
-				${this.class ? classMessage.this.class.img : classMessage.default.img}
-				<div><span class="bolder">${this.class ? classMessage.this.class.header : classMessage.default.header}</span>
+				<div class="status-img">${this.class ? classMessage.this.class.img : classMessage.default.img}</div>
+				<div class="status-text"><span class="bolder">${this.class ? classMessage.this.class.header : classMessage.default.header}</span>
 				${this.class ? classMessage.this.class.message : classMessage.default.message}</div>
 			</div>
 			<div class="file-list ">
@@ -80,7 +84,6 @@ export default class NmdFileDrop extends HTMLElement {
 	}
 
 	registerEventListeners() {
-
 
 		// CLICK ON DROP AREA
 		this.querySelector(".drop-area").addEventListener("click", () => {
@@ -96,8 +99,6 @@ export default class NmdFileDrop extends HTMLElement {
 			e.dataTransfer.dropEffect = 'copy'
 
 			let error, success = false;
-
-			console.log(e.dataTransfer.items[0])
 
 			for (var i = 0; i < e.dataTransfer.items.length; i++) {
 				this.checkFileType(e.dataTransfer.items[i]) ? success = true : error = true
@@ -139,16 +140,8 @@ export default class NmdFileDrop extends HTMLElement {
 			this.counter = 0
 			this.class = ""
 
-			console.log(e.dataTransfer.files[0])
-
 			this.insertFiles(e.dataTransfer.files)
 		})
-
-		// CUSTOM EVENT
-		this.querySelector(".file-list").addEventListener("click", e => {
-			// TODO - delete clicked file
-		})
-
 
 		// INPUT EVENT (input files to secondary input)
 		this.sideInput.addEventListener("change", e => {
@@ -157,8 +150,7 @@ export default class NmdFileDrop extends HTMLElement {
 			for (let file of e.target.files) {
 				if (!this.checkFileType(file)) {
 					this.class = "error"
-					setTimeout(() => { this.class = "default" }, 1000) 
-					return
+					setTimeout(() => { this.class = "default" }, 1000)
 				}
 			}
 
@@ -202,11 +194,14 @@ export default class NmdFileDrop extends HTMLElement {
 		if (classMessage[classResult] == null)
 			throw new Error(`Class ${classResult} not found`);
 
+		this.replaceStatusMessage(message.img, message.header, message.message)
+	}
 
-		this.querySelector(".drop-area").innerHTML = `
-			${message.img}
-			<div><span class="bolder">${message.header}</span> ${message.message}</div>
-		`
+	replaceStatusMessage(newImg, newHeader, newMessage) {
+		let img = this.querySelector(".status-img")
+		let message = this.querySelector(".status-text")
+		img.innerHTML = newImg
+		message.innerHTML = `<span class="bolder">${newHeader}</span> ${newMessage}`
 	}
 
 	/**
@@ -217,47 +212,36 @@ export default class NmdFileDrop extends HTMLElement {
 	insertFiles(files) {
 		if (files.length == 0)
 			return
-		/**
-		* @type {HTMLInputElement}
-		*/
-		let fileInput = this.mainInput
+
 		let dataTransfer = new DataTransfer()
 
-		if (!this.multiple) {
-			// Get all files from input and add to dataTransfer
-			dataTransfer.items.add(files[0])
-			fileInput.files = dataTransfer.files
-			return
-		} else {
-			for (let item of fileInput.files) {
-				dataTransfer.items.add(item)
-			}
-
-			for (let file of files) {
-				if (this.checkFileType(file))
-					dataTransfer.items.add(file)
-			}
-
+		if (this.multiple) {
+			for (let file of this.mainInput.files)
+				dataTransfer.items.add(file)
 		}
 
-		if (this.compareFileLists(dataTransfer.files, fileInput.files)) {
-			//console.log("Files are the same")
+
+		for (let file of files) {
+			if (this.checkFileType(file)) {
+				dataTransfer.items.add(file)
+
+				if (!this.multiple)
+					break
+			}
 		}
 
-		const cb = this.dispatchEvent(new CustomEvent("files-changed", {
+		const cb = this.dispatchEvent(new CustomEvent("file-added", {
 			detail: {
 				newFiles: dataTransfer.files,
-				originalFiles: fileInput.files
+				originalFiles: this.mainInput.files
 			},
 			cancelable: true,
 		}))
 
-		fileInput.files = dataTransfer.files
-		console.log(fileInput.files)
+		this.mainInput.files = dataTransfer.files
 
 		if (cb)
-			this.updateView()
-
+			this.drawFileList()
 	}
 
 	/**
@@ -278,7 +262,7 @@ export default class NmdFileDrop extends HTMLElement {
 
 		this.mainInput.files = dataTransfer.files
 
-		this.updateView()
+		this.drawFileList()
 
 	}
 
@@ -290,7 +274,7 @@ export default class NmdFileDrop extends HTMLElement {
 	}
 
 	// UPDATE VIEW OF FILES
-	updateView() {
+	drawFileList() {
 		this.getFiles().length > 0 ? this.querySelector(".file-list").classList.add("show") : this.querySelector(".file-list").classList.remove("show")
 
 		let files = this.querySelector(".file-list") // HTML area with files
@@ -300,7 +284,7 @@ export default class NmdFileDrop extends HTMLElement {
 		for (let i = 0; i < fileList.length; i++) {
 			let file = fileList.item(i)
 			let fileSize = Math.round(file.size / 1024) > 1000 ? (file.size / 1024 / 1024).toFixed(1) + " MB" : (file.size / 1024).toFixed(1) + " KB"
-			
+
 
 			html.push(`
 				<div class="file-name" data-file-id="${i}">${file.name}</div>
@@ -369,23 +353,21 @@ export default class NmdFileDrop extends HTMLElement {
 	/**
 	 * @param {Msg} classMsg 
 	 */
-	setClassMessage(classMsg){
+	setClassMessage(classMsg) {
 
-		if(typeof classMsg != "object")
-			throw new Error("Class message must be object")
+		if (typeof classMsg != "object")
+			throw new Error("ClassMsg must be an object")
 
-		for(let key in classMsg){
-			if(typeof classMsg[key] == "object" && classMessage[key] != "undefined"){
+		for (let key in classMsg) {
+			if (typeof classMsg[key] == "object" && classMessage[key] != "undefined") {
 				Object.assign(classMessage[key], classMsg[key])
 			}
 		}
-
-		this.drawUI()
-		this.updateView
+		this.setResultMessage("default")
+		console.log(this.class)
 	}
 
-
-	getClassMessage(){
+	getClassMessage() {
 		return classMessage
 	}
 }
