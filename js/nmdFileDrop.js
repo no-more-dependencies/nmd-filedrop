@@ -139,7 +139,7 @@ export default class NmdFileDrop extends HTMLElement {
 		if (DataTransferItem.prototype.isPrototypeOf(file) && file.kind != "file")
 			return false
 
-		let regex = new RegExp(this.regex, "i")
+		let regex = new RegExp(this.regex, "g")
 		let result = file.type.match(regex)
 
 		if (result != null)

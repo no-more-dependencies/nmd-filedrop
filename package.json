@@ -1,6 +1,6 @@
 {
   "name": "nmd-filedrop",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Web component FileDrop",
   "main": "./js/index.js",
   "directories": {
