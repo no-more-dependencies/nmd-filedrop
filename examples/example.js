@@ -7,4 +7,4 @@ customElements.define("nmd-filedrop", NmdFileDrop);
 /** @type {NmdFileDrop} */
 let fileDrop = document.querySelector("nmd-filedrop");
 
-fileDrop.setClassMessage({default: {header: "Warning: ", message: "You can drop only one file."}});
+fileDrop.setConfig({"cs": {default: "nasrat"}});

@@ -38,3 +38,9 @@ Event is cancelable. In the case ` e.preventDefault()`, html with files won't re
 `const fileDrop = document.querySelector('nmd-filedrop')`
 
 `fileDrop.addEventListener('file-added, e => {e.preventDefault()})'`
+
+## Now suppurt locale
+Element takes locale from HTML tag `<html lang="en">` also Mutation Observer is autopmatically registred to look for changes of lang attribute.
+By default there is en, cs, pl. You can set it with method `setConfig`
+
+```javascript

@@ -1,11 +1,31 @@
+"use strict";
 /// <reference path="./types.d.ts"/>
-import { Msg } from "./Msg.js"
+import { config } from "./config.js"
 export default class NmdFileDrop extends HTMLElement {
 	constructor() {
 		super()
 		this.counter = 0
-		this.classMessage = structuredClone(Msg)
+		this.config = structuredClone(config)
+		this.lang = document.documentElement.getAttribute('lang') || 'en'
+		const observer = new MutationObserver(mutations => {
+			for (const mutation of mutations) {
+				if (
+					mutation.type === "attributes" &&
+					mutation.attributeName === "lang" &&
+					mutation.target === document.documentElement
+				) {
+					const newLang = document.documentElement.getAttribute('lang') || 'en';
+					if (this.lang !== newLang) {
+						this.lang = newLang;
+						this.drawUI();
+					}
+				}
+			}
+		});
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"], subtree: false, childList: false });
 	}
+
+
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (name == "class") {
@@ -37,9 +57,8 @@ export default class NmdFileDrop extends HTMLElement {
 			<input type="file" ${this.multiple ? "multiple" : ""} ${this.accept ? 'accept="' + this.accept + '"' : ""} hidden> 
 			<input type="file" name="${this.name ? this.name : "file"}" ${this.multiple ? "multiple" : ""} hidden >
 			<div class="drop-area">
-				<div class="status-img">${this.class ? this.classMessage[this.class].img : this.classMessage.default.img}</div>
-				<div class="status-text"><span class="bolder">${this.class ? this.classMessage.this.class.header : this.classMessage.default.header}</span>
-				${this.class ? this.classMessage.class.message : this.classMessage.default.message}</div>
+				<div class="status-img">${this.class ? this.config.icons[this.class] : this.config.icons.default}</div>
+				<div class="status-text">${this.class ? this.config[this.lang][this.class] : this.config[this.lang]["default"]}</div>
 			</div>
 			<div class="file-list ">
 			</div>
@@ -152,19 +171,19 @@ export default class NmdFileDrop extends HTMLElement {
 	 * @param {string} classResult 
 	 */
 	setResultMessage(classResult) {
-		let message = this.classMessage[classResult]
+		let message = this.config[this.lang][classResult] ?? this.config[this.lang].default
 
-		if (this.classMessage[classResult] == null)
+		if (this.config[this.lang][classResult] == null)
 			throw new Error(`Class ${classResult} not found`);
 
-		this.replaceStatusMessage(message.img, message.header, message.message)
+		this.replaceStatusMessage(this.config.icons[classResult] ?? this.config.icons.default, message)
 	}
 
-	replaceStatusMessage(newImg, newHeader, newMessage) {
+	replaceStatusMessage(newImg, text) {
 		let img = this.querySelector(".status-img")
 		let message = this.querySelector(".status-text")
 		img.innerHTML = newImg
-		message.innerHTML = `<span class="bolder">${newHeader}</span> ${newMessage}`
+		message.innerHTML = `${text}`
 	}
 
 	/**
@@ -314,23 +333,23 @@ export default class NmdFileDrop extends HTMLElement {
 	}
 
 	/**
-	 * @param {Msg} classMsg 
+	 * @param {import("nmd-filedrop").Config} config 
 	 */
-	setClassMessage(classMsg) {
+	setConfig(config) {
 
-		if (typeof classMsg != "object")
+		if (typeof config != "object")
 			throw new Error("ClassMsg must be an object")
 
-		for (let key in classMsg) {
-			if (typeof classMsg[key] == "object" && this.classMessage[key] != "undefined") {
-				Object.assign(this.classMessage[key], classMsg[key])
+		for (let key in config) {
+			if (typeof config[key] == "object" && this.config[key] != "undefined") {
+				Object.assign(this.config[key], config[key])
 			}
 		}
 		
 		this.setResultMessage("default")
 	}
 
-	getClassMessage() {
-		return classMessage
+	getConfig() {
+		return this.config
 	}
 }
